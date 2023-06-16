@@ -1,10 +1,7 @@
 import { Request, Response } from 'express'
-import { QueryResult } from 'pg'
 import { pool } from '../database'
 
-import {
-  successItemsResponse
-} from '../utils/responses'
+import { successItemsResponse } from '../utils/responses'
 import StatusError from '../utils/responses/status-error'
 import { handleControllerError } from '../utils/responses/handleControllerError'
 
@@ -16,7 +13,7 @@ export const getEscuelas = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const response: QueryResult = await pool.query('SELECT * FROM escuelas')
+    const response = await pool.query('SELECT * FROM escuelas')
     if (response.rowCount === 0) {
       throw new StatusError('La tabla está vacía', STATUS_NOT_FOUND)
     }

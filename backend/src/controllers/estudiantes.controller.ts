@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { QueryResult } from 'pg'
 import { pool } from '../database'
 
 import {
@@ -68,11 +67,11 @@ export const getEstudiantes = async (
       offset = 0
     }
 
-    const isEmpty: QueryResult = await pool.query('SELECT * FROM estudiantes')
+    const isEmpty = await pool.query('SELECT * FROM estudiantes')
     if (isEmpty.rowCount === 0) {
       throw new StatusError('La tabla está vacía', STATUS_NOT_FOUND)
     }
-    const response: QueryResult = await pool.query(
+    const response = await pool.query(
       'SELECT * FROM estudiantes LIMIT $1 OFFSET $2',
       [sizeAsNumber, offset]
     )
@@ -92,7 +91,7 @@ export const getEstudianteById = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const response: QueryResult = await pool.query(
+    const response = await pool.query(
       'SELECT * FROM estudiantes WHERE id_estudiante = $1',
       [req.params.estudianteId]
     )
@@ -108,8 +107,10 @@ export const getEstudianteById = async (
   }
 }
 
-const getEstudianteDataFromRequestBody = (requestBody: any): String[] => {
-  const newEstudiante = []
+const getEstudianteDataFromRequestBody = (
+  requestBody: any
+): Array<string | number> => {
+  const newEstudiante: Array<string | number> = []
   newEstudiante.push(parseName(requestBody.nombre))
   return newEstudiante
 }
@@ -121,12 +122,12 @@ export const addEstudiante = async (
   try {
     const newEstudiante = getEstudianteDataFromRequestBody(req.body)
 
-    const insertar: QueryResult = await pool.query(
+    const insertar = await pool.query(
       'INSERT INTO estudiante (cedula_est, nombre_est, cod_escuela, direccion_est, telefono_est, fecha_nac, status_est) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id_estudiante',
       newEstudiante
     )
     const insertedId: string = insertar.rows[0].id_estado
-    const response: QueryResult = await pool.query(
+    const response = await pool.query(
       `SELECT * FROM estudiantes WHERE id_estudiante = ${insertedId}`
     )
     return successItemsResponse(res, STATUS_CREATED, response.rows[0])
@@ -141,7 +142,7 @@ export const updateEstudiante = async (
 ): Promise<Response> => {
   try {
     const updatedEstudiante = getEstudianteDataFromRequestBody(req.body)
-    const response: QueryResult = await pool.query(
+    const response = await pool.query(
       'UPDATE profesores SET nombre = $1 WHERE id_estudiante = $2',
       [updatedEstudiante, req.params.estudianteId]
     )
@@ -169,7 +170,7 @@ export const deleteEstudiante = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const response: QueryResult = await pool.query(
+    const response = await pool.query(
       'DELETE FROM estudiantes WHERE id_estudiante = $1',
       [req.params.estudianteId]
     )
