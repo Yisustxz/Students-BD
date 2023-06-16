@@ -75,6 +75,7 @@ INSERT INTO estudiantes (
   ('45678901', 'Sofia Martinez', 'ESC1', 'Av. 4', '04260000000', '2002-01-01', 'A'),
   ('56789012', 'Luisa Garcia', 'ESC1', 'Av. 5', '04180000000', '2003-01-01', 'A');
 
+-- crear 5 estudiantes mas para tener datos de prueba distintos
 
 -- Pagos Realizados
 
@@ -106,6 +107,9 @@ INSERT INTO secciones (
   ('006', 'ASG109', '202115', '10000010'),
   ('007', 'ASG108', '202125', '10000009'),
   ('008', 'ASG109', '202125', '10000010');
+
+-- crear secciones con lapsos distintos para tener datos de prueba distintos
+
 
 -- Calificaciones
 

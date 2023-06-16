@@ -181,6 +181,8 @@ WHERE cedula_profesor NOT IN (
 -- datos contenidos en la tabla Profesores, en un archivo histórico denominado
 -- HistoricoProfesor.
 
+-- crear valores de prueba para profesores de 2012 para abajo y asignarle secciones esos años    
+
 CREATE TABLE historicoProfesores (
   cedula_profesor dom_cedulas,
   nombre_p dom_nombre,
