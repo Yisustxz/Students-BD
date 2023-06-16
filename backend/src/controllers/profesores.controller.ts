@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { QueryResult } from 'pg'
 import { pool } from '../database'
+
 import {
   PaginateSettings,
   paginatedItemsResponse,
@@ -47,7 +48,7 @@ const validatePageAndSize = (
   return [pageAsNumber, sizeAsNumber]
 }
 
-export const getEstados = async (
+export const getProfesores = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
@@ -67,16 +68,16 @@ export const getEstados = async (
       offset = 0
     }
 
-    const isEmpty: QueryResult = await pool.query('SELECT * FROM estados')
+    const isEmpty: QueryResult = await pool.query('SELECT * FROM profesores')
     if (isEmpty.rowCount === 0) {
       throw new StatusError('La tabla está vacía', STATUS_NOT_FOUND)
     }
     const response: QueryResult = await pool.query(
-      'SELECT * FROM estados LIMIT $1 OFFSET $2',
+      'SELECT * FROM profesores LIMIT $1 OFFSET $2',
       [sizeAsNumber, offset]
     )
     const pagination: PaginateSettings = {
-      total: response.rowCount,
+      total: isEmpty.rowCount,
       currentPage: pageAsNumber,
       perPage: sizeAsNumber
     }
@@ -86,18 +87,18 @@ export const getEstados = async (
   }
 }
 
-export const getEstadosById = async (
+export const getProfesorById = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
     const response: QueryResult = await pool.query(
-      'SELECT * FROM estados WHERE id_estado = $1',
-      [req.params.estadoId]
+      'SELECT * FROM profesores WHERE cedula_profesor = $1',
+      [req.params.profesorId]
     )
     if (response.rowCount === 0) {
       throw new StatusError(
-        `No se pudo encontrar el registro de id: ${req.params.estadoId}`,
+        `No se pudo encontrar el profesor de CI: ${req.params.profesorId}`,
         STATUS_NOT_FOUND
       )
     }
@@ -107,25 +108,26 @@ export const getEstadosById = async (
   }
 }
 
-const getEstadoDataFromRequestBody = (requestBody: any): String => {
-  const newEstado = parseName(requestBody.nombre)
-  return newEstado
+const getProfesorDataFromRequestBody = (requestBody: any): String[] => {
+  const newProfesor = []
+  newProfesor.push(parseName(requestBody.nombre))
+  return newProfesor
 }
 
-export const addEstados = async (
+export const addProfesor = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
-    const newEstado = getEstadoDataFromRequestBody(req.body)
+    const newProfesor = getProfesorDataFromRequestBody(req.body)
 
     const insertar: QueryResult = await pool.query(
-      'INSERT INTO estados (nombre) VALUES ($1) RETURNING id_estado',
-      [newEstado]
+      'INSERT INTO profesor (cedula_profesor, nombre_p, direccion_p, telefono_p, categoria, dedicacion, fecha_ingreso, fecha_egreso, status_p) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING cedula_profesor',
+      newProfesor
     )
     const insertedId: string = insertar.rows[0].id_estado
     const response: QueryResult = await pool.query(
-      `SELECT * FROM estados WHERE id_estado = ${insertedId}`
+      `SELECT * FROM profesores WHERE cedula_profesor = ${insertedId}`
     )
     return successItemsResponse(res, STATUS_CREATED, response.rows[0])
   } catch (error: unknown) {
@@ -133,19 +135,19 @@ export const addEstados = async (
   }
 }
 
-export const updateEstados = async (
+export const updateProfesor = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
-    const updatedRoom = getEstadoDataFromRequestBody(req.body)
-    const response: QueryResult = await pool.query('UPDATE estados SET nombre = $1 WHERE id_estado = $2', [
-      updatedRoom,
-      req.params.estadoId
-    ])
+    const updatedProfesor = getProfesorDataFromRequestBody(req.body)
+    const response: QueryResult = await pool.query(
+      'UPDATE profesores SET nombre = $1 WHERE cedula_profesor = $2',
+      [updatedProfesor, req.params.profesorId]
+    )
     if (response.rowCount === 0) {
       throw new StatusError(
-        `No se pudo encontrar el registro de id: ${req.params.estadoId}`,
+        `No se pudo encontrar el profesor de CI: ${req.params.profesorId}`,
         STATUS_NOT_FOUND
       )
     }
@@ -156,28 +158,28 @@ export const updateEstados = async (
         'Operación PUT exitosa pero el contenido del registro no cambió'
       )
     }
-    return successResponse(res, STATUS_OK, 'Estado modificado exitosamente')
+    return successResponse(res, STATUS_OK, 'Profesor modificado exitosamente')
   } catch (error: unknown) {
     return handleControllerError(error, res)
   }
 }
 
-export const deleteEstados = async (
+export const deleteProfesor = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
     const response: QueryResult = await pool.query(
-      'DELETE FROM estados WHERE id_estado = $1',
-      [req.params.estadoId]
+      'DELETE FROM profesores WHERE cedula_profesor = $1',
+      [req.params.profesorId]
     )
     if (response.rowCount === 0) {
       throw new StatusError(
-        `No se pudo encontrar el registro de id: ${req.params.estadoId}`,
+        `No se pudo encontrar el profesor de CI: ${req.params.profesorId}`,
         STATUS_NOT_FOUND
       )
     }
-    return successResponse(res, STATUS_OK, 'Estado eliminado')
+    return successResponse(res, STATUS_OK, 'Profesor eliminado')
   } catch (error: unknown) {
     return handleControllerError(error, res)
   }

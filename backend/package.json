@@ -28,7 +28,7 @@
   },
   "eslintConfig": {
     "parserOptions": {
-      "project": "tsconfig.json"
+      "project": "./backend/tsconfig.json"
     },
     "extends": [
       "./node_modules/ts-standard/eslintrc.json"
