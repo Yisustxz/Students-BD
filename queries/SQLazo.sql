@@ -1,7 +1,7 @@
 -- Domain Definitions
 
 CREATE DOMAIN dom_cedulas VARCHAR(8) NOT NULL;
-CREATE DOMAIN dom_nombre VARCHAR(16) NOT NULL;
+CREATE DOMAIN dom_nombre VARCHAR(24) NOT NULL;
 CREATE DOMAIN dom_fechas TIMESTAMP;
 
 --

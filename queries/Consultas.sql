@@ -169,10 +169,13 @@ ORDER BY asignaturas_reprobadas DESC;
 
 UPDATE profesores
 SET status_p = 'R', fecha_egreso = '31-03-2023'
-WHERE cedula_profesor NOT IN (
-  SELECT DISTINCT cedula_profesor
-  FROM secciones
-  WHERE lapso = '202325'
+WHERE (
+  cedula_profesor NOT IN (
+    SELECT DISTINCT cedula_profesor
+    FROM secciones
+    WHERE lapso = '202325'
+  )
+  AND fecha_egreso IS NULL;
 );
 
 -- (9)
@@ -180,6 +183,8 @@ WHERE cedula_profesor NOT IN (
 -- a 10 años, manteniendo la consistencia de la base de datos, y registrando todos los
 -- datos contenidos en la tabla Profesores, en un archivo histórico denominado
 -- HistoricoProfesor.
+
+-- crear valores de prueba para profesores de 2012 para abajo y asignarle secciones esos años    
 
 CREATE TABLE historicoProfesores (
   cedula_profesor dom_cedulas,
