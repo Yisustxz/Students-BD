@@ -169,10 +169,13 @@ ORDER BY asignaturas_reprobadas DESC;
 
 UPDATE profesores
 SET status_p = 'R', fecha_egreso = '31-03-2023'
-WHERE cedula_profesor NOT IN (
-  SELECT DISTINCT cedula_profesor
-  FROM secciones
-  WHERE lapso = '202325'
+WHERE (
+  cedula_profesor NOT IN (
+    SELECT DISTINCT cedula_profesor
+    FROM secciones
+    WHERE lapso = '202325'
+  )
+  AND fecha_egreso IS NULL;
 );
 
 -- (9)
