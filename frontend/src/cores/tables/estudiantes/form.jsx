@@ -1,10 +1,10 @@
-function ProfesoresForm() {
+function EstudiantesForm() {
   return (
-    <form className='w-full max-w-lg'>
+    <form className='flex flex-col items-center justify-center container'>
       <h2 className='text-4xl font-extrabold dark:text-white my-8'>
-        Profesores
+        Estudiantes
       </h2>
-      <div className='flex flex-wrap -mx-3 mb-6'>
+      <div className='flex flex-wrap mx-64 mb-6'>
         <div className='w-full md:w-1/2 px-3'>
           <label
             className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'
@@ -34,9 +34,6 @@ function ProfesoresForm() {
             placeholder='Jane'
           />
         </div>
-      </div>
-
-      <div className='flex flex-wrap -mx-3 mb-6'>
         <div className='w-full md:w-1/2 px-3 mb-6 md:mb-0'>
           <label
             className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'
@@ -71,42 +68,6 @@ function ProfesoresForm() {
             className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'
             htmlFor='grid-last-name'
           >
-            Categoria
-          </label>
-          <select
-            data-te-select-init
-            className='py-3 px-4 pr-9 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500  bg-gray-200 dark:border-gray-700 dark:text-gray-400'
-          >
-            <option value='A'>Asistente</option>
-            <option value='I'>Instructor</option>
-            <option value='G'>Agregado</option>
-            <option value='S'>Asociado</option>
-            <option value='T'>Titular</option>
-          </select>
-        </div>
-
-        <div className='w-full md:w-1/2 px-3'>
-          <label
-            className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'
-            htmlFor='grid-last-name'
-          >
-            Dedicacion
-          </label>
-          <select
-            data-te-select-init
-            className='py-3 px-4 pr-9 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500  bg-gray-200 dark:border-gray-700 dark:text-gray-400'
-          >
-            <option value='TC'>Tiempo Completo</option>
-            <option value='MT'>Medio Tiempo</option>
-            <option value='TV'>Tiempo Convencional</option>
-          </select>
-        </div>
-
-        <div className='w-full md:w-1/2 px-3'>
-          <label
-            className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 my-4'
-            htmlFor='grid-last-name'
-          >
             Fecha de Nacimiento
           </label>
           <input
@@ -121,10 +82,10 @@ function ProfesoresForm() {
 
         <div className='w-full md:w-1/2 px-3'>
           <label
-            className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 my-4'
+            className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'
             htmlFor='grid-last-name'
           >
-            Estatus del Profesor
+            estatus del estudiante
           </label>
           <select
             data-te-select-init
@@ -132,8 +93,25 @@ function ProfesoresForm() {
           >
             <option value='A'>Activo</option>
             <option value='R'>Retirado</option>
-            <option value='P'>De permiso</option>
-            <option value='J'>Jubilado</option>
+            <option value='N'>No inscrito</option>
+            <option value='E'>Egresado</option>
+          </select>
+        </div>
+        <div className='w-full md:w-1/2 px-3'>
+          <label
+            className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'
+            htmlFor='grid-last-name'
+          >
+            escuela del estudiante
+          </label>
+          <select
+            data-te-select-init
+            className='py-3 px-4 pr-9 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500  bg-gray-200 dark:border-gray-700 dark:text-gray-400'
+          >
+            <option value='A'>Activo</option>
+            <option value='R'>Retirado</option>
+            <option value='N'>No inscrito</option>
+            <option value='E'>Egresado</option>
           </select>
         </div>
       </div>
@@ -147,4 +125,4 @@ function ProfesoresForm() {
   )
 }
 
-export default ProfesoresForm
+export default EstudiantesForm

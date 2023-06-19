@@ -1,19 +1,18 @@
-import './App.css'
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
-import Table from './table'
-import data from './data.json'
-import Home from './cores/home/Home'
-import Estudiantes from './cores/estudiantes/EstudiantesForm'
-import Profesores from './cores/profesores/ProfesoresForm'
+import Home from './cores/home'
+import Estudiantes from './cores/tables/estudiantes/form'
+import Profesores from './cores/tables/profesores/form'
+// import Table from './components/Table'
+// import data from './data.json'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Home></Home>} />
-        <Route path='/TablaPrueba' element={<Table data={data}></Table>} />
-        <Route path='/EstudiantesForm' element={<Estudiantes></Estudiantes>} />
-        <Route path='/ProfesoresForm' element={<Profesores></Profesores>} />
+        <Route path='/' element={<Home />} />
+        {/* <Route path='/TablaPrueba' element={<Table data={data} />} /> */}
+        <Route path='/EstudiantesForm' element={<Estudiantes />} />
+        <Route path='/ProfesoresForm' element={<Profesores />} />
       </Routes>
     </BrowserRouter>
   )
