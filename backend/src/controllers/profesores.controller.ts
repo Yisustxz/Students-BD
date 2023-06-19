@@ -10,6 +10,7 @@ import {
 } from '../utils/responses'
 import StatusError from '../utils/status-error'
 import { handleControllerError } from '../utils/handleControllerError'
+import { validatePageAndSize } from '../utils/validatePageAndSize'
 
 const STATUS_OK = 200
 const STATUS_CREATED = 201
@@ -18,34 +19,6 @@ const STATUS_NOT_FOUND = 404
 
 const DEFAULT_PAGE = 1
 const DEFAULT_SIZE = 10
-
-const validatePageAndSize = (
-  page: any,
-  size: any
-): [number, number] | string => {
-  let pageAsNumber: number
-  let sizeAsNumber: number
-
-  if (!isNaN(Number(page)) && Number.isInteger(Number(page))) {
-    pageAsNumber = Number.parseInt(page)
-    if (pageAsNumber < 1) {
-      pageAsNumber = 1
-    }
-  } else {
-    return 'La página debe ser un número entero'
-  }
-
-  if (!isNaN(Number(size)) && Number.isInteger(Number(size))) {
-    sizeAsNumber = Number.parseInt(size)
-    if (sizeAsNumber < 1) {
-      sizeAsNumber = 1
-    }
-  } else {
-    return 'La tamaño debe ser un número entero'
-  }
-
-  return [pageAsNumber, sizeAsNumber]
-}
 
 export const getProfesores = async (
   req: Request,
@@ -165,21 +138,15 @@ export const updateProfesor = async (
 ): Promise<Response> => {
   try {
     const updatedProfesor = getProfesorDataFromRequestBody(req.body)
+    updatedProfesor.push(req.params.id)
     const response = await pool.query({
-      text: 'UPDATE profesores SET nombre = $1 WHERE cedula_profesor = $2',
-      values: [updatedProfesor, req.params.id]
+      text: 'UPDATE profesores SET cedula_profesor = $1, nombre_p = $2, direccion_p = $3, telefono_p = $4, categoria = $5, dedicacion = $6, fecha_ingreso = %7, fecha_egreso = $8, status_p = $9 WHERE cedula_profesor = $10',
+      values: updatedProfesor
     })
     if (response.rowCount === 0) {
       throw new StatusError(
         `No se pudo encontrar el profesor de CI: ${req.params.id}`,
         STATUS_NOT_FOUND
-      )
-    }
-    if (response.rowCount === 0) {
-      return successResponse(
-        res,
-        STATUS_OK,
-        'Operación PUT exitosa pero el contenido del registro no cambió'
       )
     }
     return successResponse(res, STATUS_OK, 'Profesor modificado exitosamente')
