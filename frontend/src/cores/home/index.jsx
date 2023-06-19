@@ -11,6 +11,7 @@ function Home() {
   const loadHomeInfo = async () => {
     try {
       const profesoresData = await getProfesores()
+      console.log(profesoresData)
       const estudiantesData = await getEstudiantes()
       setProfesoresQuantity(profesoresData.paginate.total)
       setEstudiantesQuantity(estudiantesData.paginate.total)
@@ -35,7 +36,7 @@ function Home() {
           <h2 className='text-4xl font-extrabold my-8 '>
             Profesores: {profesoresQuantity}
           </h2>
-          <Link to='/ProfesoresForm'>
+          <Link to='/Profesores'>
             <button className='text-violet-600 bg-[#f9f9f9] rounded-lg text-[1em] font-medium cursor-pointer px-[0.6em] py-[1em] transition-all border-2 hover:border-violet-400 mb-3'>
               Ir a profesores
             </button>
@@ -46,7 +47,7 @@ function Home() {
           <h2 className='text-4xl font-extrabold my-8'>
             Estudiantes: {estudiantesQuantity}
           </h2>
-          <Link to='/EstudiantesForm'>
+          <Link to='/Estudiantes'>
             <button className='text-violet-600 bg-[#f9f9f9] rounded-lg text-[1em] font-medium cursor-pointer px-[0.6em] py-[1em] transition-all border-2 hover:border-violet-400 mb-3'>
               Ir a estudiantes
             </button>
