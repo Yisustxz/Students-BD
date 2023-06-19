@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Request, Response } from 'express'
 import { pool } from '../database'
 
@@ -7,9 +8,9 @@ import {
   successItemsResponse,
   successResponse
 } from '../utils/responses'
-import { parseName } from '../utils/parsers'
-import StatusError from '../utils/responses/status-error'
-import { handleControllerError } from '../utils/responses/handleControllerError'
+import StatusError from '../utils/status-error'
+import { handleControllerError } from '../utils/handleControllerError'
+import { validatePageAndSize } from '../utils/validatePageAndSize'
 
 const STATUS_OK = 200
 const STATUS_CREATED = 201
@@ -18,34 +19,6 @@ const STATUS_NOT_FOUND = 404
 
 const DEFAULT_PAGE = 1
 const DEFAULT_SIZE = 10
-
-const validatePageAndSize = (
-  page: any,
-  size: any
-): [number, number] | string => {
-  let pageAsNumber: number
-  let sizeAsNumber: number
-
-  if (!isNaN(Number(page)) && Number.isInteger(Number(page))) {
-    pageAsNumber = Number.parseInt(page)
-    if (pageAsNumber < 1) {
-      pageAsNumber = 1
-    }
-  } else {
-    return 'La página debe ser un número entero'
-  }
-
-  if (!isNaN(Number(size)) && Number.isInteger(Number(size))) {
-    sizeAsNumber = Number.parseInt(size)
-    if (sizeAsNumber < 1) {
-      sizeAsNumber = 1
-    }
-  } else {
-    return 'La tamaño debe ser un número entero'
-  }
-
-  return [pageAsNumber, sizeAsNumber]
-}
 
 export const getProfesores = async (
   req: Request,
@@ -67,14 +40,14 @@ export const getProfesores = async (
       offset = 0
     }
 
-    const isEmpty = await pool.query('SELECT * FROM profesores')
+    const isEmpty = await pool.query({ text: 'SELECT * FROM profesores' })
     if (isEmpty.rowCount === 0) {
       throw new StatusError('La tabla está vacía', STATUS_NOT_FOUND)
     }
-    const response = await pool.query(
-      'SELECT * FROM profesores LIMIT $1 OFFSET $2',
-      [sizeAsNumber, offset]
-    )
+    const response = await pool.query({
+      text: 'SELECT * FROM profesores ORDER BY nombre_p LIMIT $1 OFFSET $2',
+      values: [sizeAsNumber, offset]
+    })
     const pagination: PaginateSettings = {
       total: isEmpty.rowCount,
       currentPage: pageAsNumber,
@@ -91,13 +64,13 @@ export const getProfesorById = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const response = await pool.query(
-      'SELECT * FROM profesores WHERE cedula_profesor = $1',
-      [req.params.profesorId]
-    )
+    const response = await pool.query({
+      text: 'SELECT * FROM profesores WHERE cedula_profesor = $1',
+      values: [req.params.id]
+    })
     if (response.rowCount === 0) {
       throw new StatusError(
-        `No se pudo encontrar el profesor de CI: ${req.params.profesorId}`,
+        `No se pudo encontrar el profesor de CI: ${req.params.id}`,
         STATUS_NOT_FOUND
       )
     }
@@ -109,9 +82,31 @@ export const getProfesorById = async (
 
 const getProfesorDataFromRequestBody = (
   requestBody: any
-): Array<string | number> => {
-  const newProfesor: Array<string | number> = []
-  newProfesor.push(parseName(requestBody.nombre))
+): any[] => {
+  const {
+    cedula_profesor,
+    nombre_p,
+    direccion_p,
+    telefono_p,
+    categoria,
+    dedicacion,
+    fecha_ingreso,
+    fecha_egreso,
+    status_p
+  } = requestBody
+
+  const newProfesor = [
+    cedula_profesor,
+    nombre_p,
+    direccion_p,
+    telefono_p,
+    categoria,
+    dedicacion,
+    fecha_ingreso,
+    fecha_egreso,
+    status_p
+  ]
+
   return newProfesor
 }
 
@@ -122,14 +117,15 @@ export const addProfesor = async (
   try {
     const newProfesor = getProfesorDataFromRequestBody(req.body)
 
-    const insertar = await pool.query(
-      'INSERT INTO profesor (cedula_profesor, nombre_p, direccion_p, telefono_p, categoria, dedicacion, fecha_ingreso, fecha_egreso, status_p) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING cedula_profesor',
-      newProfesor
-    )
-    const insertedId: string = insertar.rows[0].id_estado
-    const response = await pool.query(
-      `SELECT * FROM profesores WHERE cedula_profesor = ${insertedId}`
-    )
+    const insertar = await pool.query({
+      text: 'INSERT INTO profesores (cedula_profesor, nombre_p, direccion_p, telefono_p, categoria, dedicacion, fecha_ingreso, fecha_egreso, status_p) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING cedula_profesor',
+      values: newProfesor
+    })
+    const insertedId: string = insertar.rows[0].cedula_profesor
+    const response = await pool.query({
+      text: 'SELECT * FROM profesores WHERE cedula_profesor = $1',
+      values: [insertedId]
+    })
     return successItemsResponse(res, STATUS_CREATED, response.rows[0])
   } catch (error: unknown) {
     return handleControllerError(error, res)
@@ -142,21 +138,15 @@ export const updateProfesor = async (
 ): Promise<Response> => {
   try {
     const updatedProfesor = getProfesorDataFromRequestBody(req.body)
-    const response = await pool.query(
-      'UPDATE profesores SET nombre = $1 WHERE cedula_profesor = $2',
-      [updatedProfesor, req.params.profesorId]
-    )
+    updatedProfesor.push(req.params.id)
+    const response = await pool.query({
+      text: 'UPDATE profesores SET cedula_profesor = $1, nombre_p = $2, direccion_p = $3, telefono_p = $4, categoria = $5, dedicacion = $6, fecha_ingreso = %7, fecha_egreso = $8, status_p = $9 WHERE cedula_profesor = $10',
+      values: updatedProfesor
+    })
     if (response.rowCount === 0) {
       throw new StatusError(
-        `No se pudo encontrar el profesor de CI: ${req.params.profesorId}`,
+        `No se pudo encontrar el profesor de CI: ${req.params.id}`,
         STATUS_NOT_FOUND
-      )
-    }
-    if (response.rowCount === 0) {
-      return successResponse(
-        res,
-        STATUS_OK,
-        'Operación PUT exitosa pero el contenido del registro no cambió'
       )
     }
     return successResponse(res, STATUS_OK, 'Profesor modificado exitosamente')
@@ -170,13 +160,13 @@ export const deleteProfesor = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const response = await pool.query(
-      'DELETE FROM profesores WHERE cedula_profesor = $1',
-      [req.params.profesorId]
-    )
+    const response = await pool.query({
+      text: 'DELETE FROM profesores WHERE cedula_profesor = $1',
+      values: [req.params.id]
+    })
     if (response.rowCount === 0) {
       throw new StatusError(
-        `No se pudo encontrar el profesor de CI: ${req.params.profesorId}`,
+        `No se pudo encontrar el profesor de CI: ${req.params.id}`,
         STATUS_NOT_FOUND
       )
     }
