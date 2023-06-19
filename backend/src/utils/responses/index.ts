@@ -11,6 +11,19 @@ export const errorResponse = (
   })
 }
 
+export const errorResponseWithField = (
+  res: Response,
+  status: number,
+  field: string | number,
+  message: string
+): Response => {
+  return res.status(status).json({
+    success: false,
+    field,
+    message
+  })
+}
+
 export const successResponse = <T>(
   res: Response,
   status: number,

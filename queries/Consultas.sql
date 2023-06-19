@@ -13,7 +13,9 @@ WHERE (
   (EXTRACT(YEAR FROM fecha_ingreso) = EXTRACT(YEAR FROM CURRENT_DATE) - 1) AND
   (categoria IN ('I') AND dedicacion IN ('MT'))
 )
-ORDER BY fecha_ingreso, nombre_p;
+ORDER BY 
+  fecha_ingreso, 
+  nombre_p;
 
 -- (3)
 -- Listar los profesores (Cédula y Nombre) que han dictado una asignatura de nombre
@@ -60,13 +62,13 @@ ORDER BY profesor;
 SELECT 
   esc.cod_escuela AS codigo, 
   esc.nombre_esc AS escuela, 
-  COUNT(CASE WHEN est.status_est IN ('A') THEN 1 ELSE NULL END) AS activos, 
-  COUNT(CASE WHEN est.status_est IN ('N') THEN 1 ELSE NULL END) AS no_inscritos,
-  COUNT(CASE WHEN est.status_est IN ('R') THEN 1 ELSE NULL END) AS retirados,
-  COUNT(CASE WHEN est.status_est IN ('A', 'N', 'R') THEN 1 ELSE NULL END) AS total_estudiantes
+  COUNT(CASE WHEN est.status_est IN ('A') THEN 1 END) AS activos, 
+  COUNT(CASE WHEN est.status_est IN ('N') THEN 1 END) AS no_inscritos,
+  COUNT(CASE WHEN est.status_est IN ('R') THEN 1 END) AS retirados,
+  COUNT(CASE WHEN est.status_est IN ('A', 'N', 'R') THEN 1 END) AS total_estudiantes
 FROM escuelas AS esc
-INNER JOIN estudiantes AS est ON esc.cod_escuela = est.cod_escuela
-GROUP BY esc.cod_escuela, esc.nombre_esc
+LEFT JOIN estudiantes AS est ON esc.cod_escuela = est.cod_escuela
+GROUP BY esc.cod_escuela
 ORDER BY total_estudiantes DESC;
 
 -- (5)
@@ -100,16 +102,18 @@ ORDER BY est.id_estudiante;
 -- ordenado por semestre y la cantidad de estudiantes, ambos en forma descendente.
 
 SELECT 
-  asg.semestre, 
-  asg.cod_asignatura AS codigo, 
-  asg.nombre_asig AS asignatura, 
+  asg.cod_asignatura AS codigo,
+  asg.nombre_asig AS asignatura,
+  asg.semestre,
   COUNT(*) AS estudiantes_aprobados
 FROM asignaturas AS asg
 INNER JOIN secciones AS sec ON asg.cod_asignatura = sec.cod_asignatura
 INNER JOIN calificaciones AS cal ON sec.nrc = cal.nrc
 WHERE asg.status_a IN ('E') AND cal.status_n IN ('A')
 GROUP BY asg.cod_asignatura
-ORDER BY semestre DESC, estudiantes_aprobados DESC;
+ORDER BY 
+  semestre DESC, 
+  estudiantes_aprobados DESC;
 
 -- (7)
 -- Liste los estudiantes activos que hayan reprobado más de 5 asignaturas distintas y

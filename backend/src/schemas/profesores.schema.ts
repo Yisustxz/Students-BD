@@ -6,9 +6,7 @@ export const profesoresSchema = z.object({
     .nonempty('Es necesario indicar una cedula de identidad')
     .min(6, 'La cédula es demasiado corta')
     .max(10, 'La cédula es demasiado larga')
-    .regex(/^\d+$/, {
-      message: 'La cédula debe contener solo números'
-    }),
+    .regex(/^\d+$/, 'La cédula debe contener solo números'),
   nombre_p: z
     .string()
     .nonempty('Es necesario indicar un nombre')
@@ -20,9 +18,7 @@ export const profesoresSchema = z.object({
     .string()
     .min(11, 'El número de teléfono debe ser de 11 carácteres numéricos')
     .max(11, 'El número de teléfono debe ser de 11 carácteres numéricos')
-    .regex(/^\d+$/, {
-      message: 'El número de teléfono debe contener solo números'
-    })
+    .regex(/^\d+$/, 'El número de teléfono debe contener solo números')
     .optional(),
   categoria: z
     .enum(['A', 'I', 'G', 'S', 'T']),

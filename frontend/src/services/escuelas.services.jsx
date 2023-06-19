@@ -4,7 +4,6 @@ import { apiUrl } from '../config'
 const BASE_URL = apiUrl + '/escuelas'
 
 export const getEscuelas = async () => {
-  console.log(BASE_URL)
   try {
     const res = await axios.get(BASE_URL)
     if (!res.data.items || !res.data.success) {
