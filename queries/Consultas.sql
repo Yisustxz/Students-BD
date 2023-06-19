@@ -169,10 +169,13 @@ ORDER BY asignaturas_reprobadas DESC;
 
 UPDATE profesores
 SET status_p = 'R', fecha_egreso = '31-03-2023'
-WHERE cedula_profesor NOT IN (
-  SELECT DISTINCT cedula_profesor
-  FROM secciones
-  WHERE lapso = '202325'
+WHERE (
+  cedula_profesor NOT IN (
+    SELECT DISTINCT cedula_profesor
+    FROM secciones
+    WHERE lapso = '202325'
+  )
+  AND fecha_egreso IS NULL;
 );
 
 -- (9)
@@ -240,11 +243,12 @@ SET
   profesor_egresado = prof.cedula_profesor,
   cedula_profesor = NULL
 FROM profesores AS prof
-WHERE 
+WHERE (
   prof.status_p = 'R'
   AND 
   EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM fecha_egreso) > 10
-  AND sec.cedula_profesor = prof.cedula_profesor;
+  AND sec.cedula_profesor = prof.cedula_profesor
+);
 
 DELETE FROM profesores
 WHERE (

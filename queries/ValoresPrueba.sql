@@ -54,8 +54,10 @@ INSERT INTO escuelas (
   nombre_esc, 
   fecha_creacion
 ) VALUES 
-  ('ESC1', 'Escuela de Ingeniería', '2021-01-01'),
-  ('ESC2', 'Escuela de Ciencias', '2021-01-01');
+  ('ESC1', 'Escuela de Ingeniería', '1953-10-24'),
+  ('ESC2', 'Escuela de Derecho', '1953-10-24'),
+  ('ESC3', 'Escuela de Comunicación Social', '1953-10-24'),
+  ('ESC4', 'Escuela de Administración y Contaduría', '1953-10-24');
 
 
 -- Estudiantes
@@ -135,3 +137,4 @@ INSERT INTO calificaciones (
   (5, '002', 20, 'A'),
   (5, '003', 18, 'A'),
   (5, '008', 1, 'R');
+  
