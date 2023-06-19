@@ -245,11 +245,12 @@ SET
   profesor_egresado = prof.cedula_profesor,
   cedula_profesor = NULL
 FROM profesores AS prof
-WHERE 
+WHERE (
   prof.status_p = 'R'
   AND 
   EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM fecha_egreso) > 10
-  AND sec.cedula_profesor = prof.cedula_profesor;
+  AND sec.cedula_profesor = prof.cedula_profesor
+);
 
 DELETE FROM profesores
 WHERE (

@@ -2,24 +2,26 @@
 
 CREATE DOMAIN dom_cedulas VARCHAR(8) NOT NULL;
 CREATE DOMAIN dom_nombre VARCHAR(24) NOT NULL;
-CREATE DOMAIN dom_fechas TIMESTAMP;
+CREATE DOMAIN dom_fechas DATE;
+
 
 --
 
 CREATE TABLE profesores(
   cedula_profesor dom_cedulas,
   nombre_p dom_nombre,
-  direccion_p VARCHAR(32) NOT NULL,
+  direccion_p TEXT NOT NULL,
   telefono_p VARCHAR(11) DEFAULT NULL,
   categoria CHAR(1) NOT NULL,
   dedicacion CHAR(2) NOT NULL,
-  fecha_ingreso dom_fechas DEFAULT CURRENT_TIMESTAMP,
+  fecha_ingreso dom_fechas DEFAULT CURRENT_DATE,
   fecha_egreso dom_fechas DEFAULT NULL,
   status_p CHAR(1) NOT NULL
 );
 
 ALTER TABLE profesores
   ADD PRIMARY KEY (cedula_profesor),
+  ADD CONSTRAINT uk_telefono_p UNIQUE (telefono_p),
   ADD CONSTRAINT v_fecha_egreso CHECK (fecha_egreso > fecha_ingreso),
   ADD CONSTRAINT v_categoria CHECK (categoria IN ('A', 'I', 'G', 'S', 'T')),
   ADD CONSTRAINT v_dedicacion CHECK (dedicacion IN ('TC', 'MT', 'TV')),
@@ -50,7 +52,7 @@ CREATE INDEX idx_nombre_asig ON asignaturas(nombre_asig);
 CREATE TABLE escuelas(
   cod_escuela VARCHAR(16),
   nombre_esc VARCHAR(32) UNIQUE NOT NULL,
-  fecha_creacion dom_fechas DEFAULT CURRENT_TIMESTAMP
+  fecha_creacion dom_fechas DEFAULT CURRENT_DATE
 );
 
 ALTER TABLE escuelas
@@ -66,7 +68,7 @@ CREATE TABLE estudiantes(
   cedula_est dom_cedulas,
   nombre_est dom_nombre,
   cod_escuela VARCHAR(16) NOT NULL,
-  direccion_est VARCHAR(32) NOT NULL,
+  direccion_est TEXT NOT NULL,
   telefono_est VARCHAR(11) DEFAULT NULL,
   fecha_nac dom_fechas NOT NULL,
   status_est CHAR(1) NOT NULL
@@ -75,6 +77,7 @@ CREATE TABLE estudiantes(
 ALTER TABLE estudiantes
   ADD PRIMARY KEY (id_estudiante),
   ADD CONSTRAINT uk_cedula_est UNIQUE (cedula_est),
+  ADD CONSTRAINT uk_telefono_est UNIQUE (telefono_est),
   ADD CONSTRAINT cod_escuela_fk FOREIGN KEY (cod_escuela) REFERENCES escuelas(cod_escuela) 
     ON DELETE RESTRICT 
     ON UPDATE CASCADE,
@@ -92,7 +95,7 @@ CREATE INDEX idx_nombre_est_cod_escuela ON estudiantes(nombre_est, cod_escuela);
 CREATE TABLE pagos_realizados(
   num_factura INTEGER GENERATED ALWAYS AS IDENTITY,
   id_estudiante INTEGER NOT NULL,
-  fecha_emision dom_fechas DEFAULT CURRENT_TIMESTAMP,
+  fecha_emision TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   tipo_pago CHAR(1) NOT NULL,
   tipo_moneda CHAR(1) NOT NULL,
   monto DECIMAL NOT NULL
@@ -146,5 +149,3 @@ ALTER TABLE calificaciones
     ON DELETE RESTRICT 
     ON UPDATE CASCADE,
   ADD CONSTRAINT v_status_n CHECK (status_n IN ('A', 'R', 'E', 'X'));
-
---
