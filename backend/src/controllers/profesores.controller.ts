@@ -10,11 +10,9 @@ import {
 } from '../utils/responses'
 import StatusError from '../utils/status-error'
 import { handleControllerError } from '../utils/handleControllerError'
-import { validatePageAndSize } from '../utils/validatePageAndSize'
 
 const STATUS_OK = 200
 const STATUS_CREATED = 201
-const STATUS_BAD_REQUEST = 400
 const STATUS_NOT_FOUND = 404
 
 const DEFAULT_PAGE = 1
@@ -25,18 +23,11 @@ export const getProfesores = async (
   res: Response
 ): Promise<Response> => {
   const { page = DEFAULT_PAGE, size = DEFAULT_SIZE } = req.query
-  const validatedParams = validatePageAndSize(page, size)
 
   try {
-    if (typeof validatedParams === 'string') {
-      throw new StatusError(validatedParams, STATUS_BAD_REQUEST)
-    }
+    let offset = (Number(page) - 1) * Number(size)
 
-    const [pageAsNumber, sizeAsNumber] = validatedParams
-
-    let offset = (pageAsNumber - 1) * sizeAsNumber
-
-    if (pageAsNumber < 1) {
+    if (Number(page) < 1) {
       offset = 0
     }
 
@@ -46,12 +37,12 @@ export const getProfesores = async (
     }
     const response = await pool.query({
       text: 'SELECT * FROM profesores ORDER BY nombre_p LIMIT $1 OFFSET $2',
-      values: [sizeAsNumber, offset]
+      values: [size, offset]
     })
     const pagination: PaginateSettings = {
       total: isEmpty.rowCount,
-      currentPage: pageAsNumber,
-      perPage: sizeAsNumber
+      currentPage: Number(page),
+      perPage: Number(size)
     }
     return paginatedItemsResponse(res, STATUS_OK, response.rows, pagination)
   } catch (error: unknown) {

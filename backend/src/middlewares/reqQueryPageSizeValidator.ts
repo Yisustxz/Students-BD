@@ -1,12 +1,25 @@
 import { NextFunction, Request, Response } from 'express'
-import { AnyZodObject, ZodError } from 'zod'
+import { z, ZodError } from 'zod'
 import { errorResponse, errorResponseWithField } from '../utils/responses'
 
-export const schemaValidator =
-  (schema: AnyZodObject) =>
+const schema = z.object({
+  page: z
+    .string()
+    .regex(/^\d+$/, 'La página debe ser un número entero')
+    .transform((value) => Math.max(parseInt(value), 1))
+    .optional(),
+  size: z
+    .string()
+    .regex(/^\d+$/, 'El tamaño debe ser un número entero')
+    .transform((value) => Math.max(parseInt(value), 1))
+    .optional()
+})
+
+export const reqQueryValidator =
+  () =>
     (req: Request, res: Response, next: NextFunction) => {
       try {
-        schema.parse(req.body)
+        schema.parse(req.query)
         return next()
       } catch (error) {
         if (error instanceof ZodError) {
@@ -15,7 +28,7 @@ export const schemaValidator =
           //   .status(400)
           //   .json(
           //     error.issues.map((issue) => ({
-          //       sucess: false,
+          //       success: false,
           //       field: issue.path[0],
           //       message: issue.message
           //     }))
