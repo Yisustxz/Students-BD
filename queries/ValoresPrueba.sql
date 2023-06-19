@@ -60,7 +60,8 @@ INSERT INTO asignaturas (
   ('ASG106', 'Arquitectura del Computador', 7, 6, 9, 'V'),
   ('ASG107', 'Ciberseguridad', 5, 7, 9, 'V'),
   ('ASG108', 'Inteligencia Artificial', 4, 7, 9, 'E'),
-  ('ASG109', 'Computación en la Nube', 5, 8, 9, 'E');
+  ('ASG109', 'Computación en la Nube', 5, 8, 9, 'E'),
+  ('ASG110', 'Ingeniería de Requisitos', 6, 8, 9, 'E');
 
 -- Estudiantes
 
