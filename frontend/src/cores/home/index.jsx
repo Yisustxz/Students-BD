@@ -25,9 +25,9 @@ function Home() {
   }, [])
 
   return (
-    <div className='flex flex-col items-center justify-evenly container h-screen'>
+    <div className='flex flex-col items-center justify-evenly w-screen h-screen'>
       <div className='flex w-screen justify-center bg-violet-400'>
-        <h2 className='text-5xl font-extrabold py-10 w-1/3 text-center'>
+        <h2 className='text-5xl font-extrabold py-10 w-1/3 text-center self-center'>
           Sistema de Administración Estudiantil
         </h2>
       </div>
