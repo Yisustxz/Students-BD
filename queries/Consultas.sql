@@ -47,7 +47,7 @@ SELECT
 FROM profesores AS prof
 INNER JOIN secciones AS sec ON prof.cedula_profesor = sec.cedula_profesor
 INNER JOIN asignaturas AS asg ON sec.cod_asignatura = asg.cod_asignatura
-WHERE (asg.nombre_asig = 'Inteligencia Artificial' AND sec.lapso = '202115')
+WHERE (asg.nombre_asig = 'Inteligencia Artificial' AND sec.lapso = '2021-15')
 ORDER BY profesor;
 
 -- (4)
@@ -175,7 +175,7 @@ WHERE (
     FROM secciones
     WHERE lapso = '202325'
   )
-  AND fecha_egreso IS NULL;
+  AND fecha_egreso IS NULL
 );
 
 -- (9)
@@ -186,45 +186,47 @@ WHERE (
 
 -- crear valores de prueba para profesores de 2012 para abajo y asignarle secciones esos años    
 
-CREATE TABLE historicoProfesores (
-  cedula_profesor dom_cedulas,
-  nombre_p dom_nombre,
-  direccion_p VARCHAR(32) NOT NULL,
-  telefono_p VARCHAR(11) DEFAULT NULL,
-  fecha_ingreso dom_fechas DEFAULT CURRENT_TIMESTAMP,
-  fecha_egreso dom_fechas DEFAULT NULL
-);
+BEGIN;
 
-ALTER TABLE historicoProfesores
-  ADD PRIMARY KEY (cedula_profesor),
-  ADD CONSTRAINT v_fecha_egreso CHECK (fecha_egreso > fecha_ingreso);
+  CREATE TABLE historicoProfesores (
+    cedula_profesor dom_cedulas,
+    nombre_p dom_nombre,
+    direccion_p VARCHAR(32) NOT NULL,
+    telefono_p VARCHAR(11) DEFAULT NULL,
+    fecha_ingreso dom_fechas DEFAULT CURRENT_TIMESTAMP,
+    fecha_egreso dom_fechas DEFAULT NULL
+  );
 
-INSERT INTO historicoProfesores(
-  cedula_profesor,
-  nombre_p,
-  direccion_p,
-  telefono_p,
-  fecha_ingreso,
-  fecha_egreso
-)
-SELECT 
-  cedula_profesor, 
-  nombre_p, direccion_p, 
-  telefono_p, 
-  fecha_ingreso, 
-  fecha_egreso
-FROM profesores
-WHERE (
-  status_p IN ('R') 
-  AND 
-  EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM fecha_egreso) > 0
-);
+  ALTER TABLE historicoProfesores
+    ADD PRIMARY KEY (cedula_profesor),
+    ADD CONSTRAINT v_fecha_egreso CHECK (fecha_egreso > fecha_ingreso);
 
-ALTER TABLE secciones
-  ADD COLUMN profesor_egresado VARCHAR(8) DEFAULT NULL,
-  ADD CONSTRAINT profesor_egresado_fk FOREIGN KEY (profesor_egresado) REFERENCES historicoProfesores(cedula_profesor)
-    ON DELETE RESTRICT 
-    ON UPDATE CASCADE;
+  INSERT INTO historicoProfesores(
+    cedula_profesor,
+    nombre_p,
+    direccion_p,
+    telefono_p,
+    fecha_ingreso,
+    fecha_egreso
+  )
+  SELECT 
+    cedula_profesor, 
+    nombre_p, direccion_p, 
+    telefono_p, 
+    fecha_ingreso, 
+    fecha_egreso
+  FROM profesores
+  WHERE (
+    status_p IN ('R') 
+    AND 
+    EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM fecha_egreso) > 0
+  );
+
+  ALTER TABLE secciones
+    ADD COLUMN profesor_egresado VARCHAR(8) DEFAULT NULL,
+    ADD CONSTRAINT profesor_egresado_fk FOREIGN KEY (profesor_egresado) REFERENCES historicoProfesores(cedula_profesor)
+      ON DELETE RESTRICT 
+      ON UPDATE CASCADE;
 
 -- UPDATE secciones
 -- SET 
@@ -240,21 +242,23 @@ ALTER TABLE secciones
 --   )
 -- );
 
-UPDATE secciones AS sec
-SET 
-  profesor_egresado = prof.cedula_profesor,
-  cedula_profesor = NULL
-FROM profesores AS prof
-WHERE (
-  prof.status_p = 'R'
-  AND 
-  EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM fecha_egreso) > 10
-  AND sec.cedula_profesor = prof.cedula_profesor
-);
+  UPDATE secciones AS sec
+  SET 
+    profesor_egresado = prof.cedula_profesor,
+    cedula_profesor = NULL
+  FROM profesores AS prof
+  WHERE (
+    prof.status_p = 'R'
+    AND 
+    EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM fecha_egreso) > 10
+    AND sec.cedula_profesor = prof.cedula_profesor
+  );
 
-DELETE FROM profesores
-WHERE (
-  status_p IN ('R') 
-  AND 
-  EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM fecha_egreso) > 10
-);
+  DELETE FROM profesores
+  WHERE (
+    status_p IN ('R') 
+    AND 
+    EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM fecha_egreso) > 10
+  );
+
+COMMIT;
