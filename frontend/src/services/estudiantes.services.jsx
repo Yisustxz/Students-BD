@@ -56,8 +56,8 @@ export const deleteEstudiante = async (id) => {
 
 export const createEstudiante = async (estudiante) => {
   try {
-    const res = await axios.put(BASE_URL, estudiante)
-    if (!res.data.message || !res.data.success) {
+    const res = await axios.post(BASE_URL, estudiante)
+    if (!res.data.success) {
       throw new Error('Ha ocurrido un fallo con el backend')
     }
 
@@ -65,7 +65,7 @@ export const createEstudiante = async (estudiante) => {
   } catch (error) {
     if (error.response) {
       throw new Error(
-        error?.response?.data?.message || 'Error al crear el profesor'
+        error?.response?.data?.message || 'Error al crear el estudiante'
       )
     }
     throw error
