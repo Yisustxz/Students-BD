@@ -139,7 +139,7 @@ export const deleteEscuela = async (
         STATUS_NOT_FOUND
       )
     }
-    return successResponse(res, STATUS_OK, 'Escuela eliminado')
+    return successResponse(res, STATUS_OK, 'La escuela ha sido eliminada')
   } catch (error: unknown) {
     return handleControllerError(error, res)
   }

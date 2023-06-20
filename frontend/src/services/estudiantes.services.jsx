@@ -3,9 +3,9 @@ import { apiUrl } from '../config'
 
 const BASE_URL = apiUrl + '/estudiantes'
 
-export const getEstudiantes = async (page = 0) => {
+export const getEstudiantes = async (page = 0, size = 4) => {
   try {
-    const res = await axios.get(BASE_URL + '?size=10&page=' + page)
+    const res = await axios.get(BASE_URL + '?size=' + size + '&page=' + page)
     if (!res.data.items || !res.data.success) {
       throw new Error('No se han recibido bien los datos del servidor :(')
     }
@@ -40,14 +40,14 @@ export const getEstudianteById = async (id) => {
 export const deleteEstudiante = async (id) => {
   try {
     const res = await axios.delete(BASE_URL + '/' + id)
-    if (!res.data.message || !res.data.success) {
+    if (!res.data.success) {
       throw new Error('Ha ocurrido un fallo con el backend')
     }
-    return res
+    return res.data
   } catch (error) {
     if (error.response) {
       throw new Error(
-        error?.response?.data?.message || 'Error al eliminar cromo'
+        error?.response?.data?.message || 'Error al eliminar el estudiante'
       )
     }
     throw error

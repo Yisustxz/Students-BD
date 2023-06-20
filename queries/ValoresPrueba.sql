@@ -5,10 +5,10 @@ INSERT INTO escuelas (
   nombre_esc, 
   fecha_creacion
 ) VALUES 
-  ('ESC1', 'Escuela de Ingeniería', '1953-10-24'),
+  ('ESC1', 'Escuela de Ingenieria', '1953-10-24'),
   ('ESC2', 'Escuela de Derecho', '1953-10-24'),
-  ('ESC3', 'Escuela de Comunicación Social', '1953-10-24'),
-  ('ESC4', 'Escuela de Administración', '1953-10-24');
+  ('ESC3', 'Escuela de Comunicacion Social', '1953-10-24'),
+  ('ESC4', 'Escuela de Administracion', '1953-10-24');
 
 -- Profesores
 

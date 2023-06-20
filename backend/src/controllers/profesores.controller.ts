@@ -161,7 +161,7 @@ export const deleteProfesor = async (
         STATUS_NOT_FOUND
       )
     }
-    return successResponse(res, STATUS_OK, 'Profesor eliminado')
+    return successResponse(res, STATUS_OK, 'El profesor ha sido eliminado')
   } catch (error: unknown) {
     return handleControllerError(error, res)
   }

@@ -136,7 +136,7 @@ export const updateEstudiante = async (
         STATUS_NOT_FOUND
       )
     }
-    return successResponse(res, STATUS_OK, 'estudiante modificado exitosamente')
+    return successResponse(res, STATUS_OK, 'Estudiante modificado exitosamente')
   } catch (error: unknown) {
     return handleControllerError(error, res)
   }
@@ -157,7 +157,7 @@ export const deleteEstudiante = async (
         STATUS_NOT_FOUND
       )
     }
-    return successResponse(res, STATUS_OK, 'estudiante eliminado')
+    return successResponse(res, STATUS_OK, 'El estudiante ha sido eliminado')
   } catch (error: unknown) {
     return handleControllerError(error, res)
   }

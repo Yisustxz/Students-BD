@@ -7,7 +7,6 @@ import {
   updateEscuela
 } from '../../controllers/escuelas.controller'
 import { reqQueryValidator } from '../../middlewares/reqQueryPageSizeValidator'
-import { idParamValidator } from '../../middlewares/idParamValidator'
 import { escuelasSchema } from '../../schemas/escuelas.schema'
 import { schemaValidator } from '../../middlewares/schemaValidator'
 
@@ -15,9 +14,9 @@ const router = Router()
 
 /* eslint-disable @typescript-eslint/no-misused-promises */
 router.get('/', reqQueryValidator(), getEscuelas)
-router.get('/:id', idParamValidator(), getEscuelaById)
+router.get('/:id', getEscuelaById)
 router.post('/', schemaValidator(escuelasSchema), addEscuela)
-router.put('/:id', idParamValidator(), updateEscuela)
-router.delete('/:id', idParamValidator(), deleteEscuela)
+router.put('/:id', updateEscuela)
+router.delete('/:id', deleteEscuela)
 
 export default router

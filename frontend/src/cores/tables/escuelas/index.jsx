@@ -1,25 +1,15 @@
 import { useState, useEffect } from 'react'
-import {
-  deleteEstudiante,
-  getEstudiantes
-} from '../../../services/estudiantes.services'
+import { deleteEscuela, getEscuelas } from '../../../services/escuelas.services'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 
-const status = {
-  A: 'Activo',
-  R: 'Retirado',
-  N: 'No inscrito',
-  E: 'Egresado'
-}
-
-const Estudiantes = () => {
-  const [estudiantes, setEstudiantes] = useState([])
+const Escuelas = () => {
+  const [escuelas, setEscuelas] = useState([])
 
   const fetchData = async () => {
     try {
-      const data = await getEstudiantes(0, 100)
-      setEstudiantes(data.items)
+      const data = await getEscuelas()
+      setEscuelas(data.items)
     } catch (error) {
       toast.error(error.message)
     }
@@ -27,7 +17,7 @@ const Estudiantes = () => {
 
   const onDelete = async (index) => {
     try {
-      const data = await deleteEstudiante(index)
+      const data = await deleteEscuela(index)
       toast.success(data.item)
       fetchData()
     } catch (error) {
@@ -59,48 +49,39 @@ const Estudiantes = () => {
             </button>
           </Link>
           <h1 className='text-center w-screen text-4xl font-extrabold py-8 bg-violet-400 mr-8'>
-            Listado de Estudiantes
+            Listado de Escuelas
           </h1>
         </div>
         <table className='mx-auto'>
           <thead>
             <tr className='bg-gray-200 text-gray-600 uppercase text-sm leading-normal'>
-              <th className='py-2 px-3 text-center'>Id</th>
-              <th className='py-2 px-3 text-center'>Cedula</th>
-              <th className='py-2 px-3 text-center'>Nombre</th>
-              <th className='py-2 px-3 text-center'>Cod Escuela</th>
-              <th className='py-2 px-3 text-center'>Direccion</th>
-              <th className='py-2 px-3 text-center'>Telefono</th>
-              <th className='py-2 px-3 text-center'>Fecha Nacimiento</th>
-              <th className='py-2 px-3 text-center'>Status</th>
+              <th className='py-2 px-3 text-center'>Código de escuela</th>
+              <th className='py-2 px-3 text-center'>Nombre de Escuela</th>
+              <th className='py-2 px-3 text-center'>Fecha de Creación</th>
               <th className='py-2 px-3 text-center'>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {estudiantes.map((fila) => (
-              <tr key={fila.id_estudiante} className='border-b border-gray-200'>
-                <td className='py-2 px-3 text-center'>{fila.id_estudiante}</td>
-                <td className='py-2 px-3 text-center'>{fila.cedula_est}</td>
-                <td className='py-2 px-3 text-center'>{fila.nombre_est}</td>
+            {escuelas.map((fila) => (
+              <tr key={fila.cod_escuela} className='border-b border-gray-200'>
                 <td className='py-2 px-3 text-center'>{fila.cod_escuela}</td>
-                <td className='py-2 px-3 text-center'>{fila.direccion_est}</td>
-                <td className='py-2 px-3 text-center'>{fila.telefono_est}</td>
+                <td className='py-2 px-3 text-center'>{fila.nombre_esc}</td>
                 <td className='py-2 px-3 text-center'>
-                  {getDate(fila.fecha_nac)}
-                </td>
-                <td className='py-2 px-3 text-center'>
-                  {status[fila.status_est]}
+                  {getDate(fila.fecha_creacion)}
                 </td>
                 <td
-                  key={fila.id_estudiante}
+                  key={fila.cod_escuela}
                   className='flex justify-center py-3 px-6 text-sm'
                 >
                   <>
-                    <button className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-1 rounded-full'>
+                    <button
+                      // onClick={() => edit}
+                      className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-1 rounded-full'
+                    >
                       Editar
                     </button>
                     <button
-                      onClick={() => onDelete(fila.id_estudiante)}
+                      onClick={() => onDelete(fila.cod_escuela)}
                       className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full'
                     >
                       Eliminar
@@ -116,4 +97,4 @@ const Estudiantes = () => {
   )
 }
 
-export default Estudiantes
+export default Escuelas

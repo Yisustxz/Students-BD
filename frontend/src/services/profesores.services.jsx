@@ -3,13 +3,12 @@ import { apiUrl } from '../config'
 
 const BASE_URL = apiUrl + '/profesores'
 
-export const getProfesores = async (page = 0, size = 5) => {
+export const getProfesores = async (page = 0, size = 4) => {
   try {
     const res = await axios.get(BASE_URL + '?size=' + size + '&page=' + page)
     if (!res.data.items || !res.data.success) {
       throw new Error('No se han recibido bien los datos del servidor :(')
     }
-    console.log(res)
     return res.data
   } catch (error) {
     if (error.response) {
@@ -38,17 +37,17 @@ export const getProfesorById = async (id) => {
   }
 }
 
-export const deleteProfesores = async (id) => {
+export const deleteProfesor = async (id) => {
   try {
     const res = await axios.delete(BASE_URL + '/' + id)
-    if (!res.data.message || !res.data.success) {
+    if (!res.data.success) {
       throw new Error('Ha ocurrido un fallo con el backend')
     }
-    return res
+    return res.data
   } catch (error) {
     if (error.response) {
       throw new Error(
-        error?.response?.data?.message || 'Error al eliminar cromo'
+        error?.response?.data?.message || 'Error al eliminar el profesor'
       )
     }
     throw error

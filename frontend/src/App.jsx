@@ -1,7 +1,8 @@
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
 import Home from './cores/home'
-import Estudiantes from './cores/tables/estudiantes/index'
-import Profesores from './cores/tables/profesores/index'
+import Escuelas from './cores/tables/escuelas'
+import Estudiantes from './cores/tables/estudiantes'
+import Profesores from './cores/tables/profesores'
 
 /* import Table from './components/Table'
  */
@@ -10,7 +11,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
-        {/*   {<Route path='/TablaPrueba' element={<Table data={data} />} />} */}
+        <Route path='/Escuelas' element={<Escuelas />} />
         <Route path='/Estudiantes' element={<Estudiantes />} />
         <Route path='/Profesores' element={<Profesores />} />
       </Routes>
