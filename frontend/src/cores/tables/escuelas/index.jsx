@@ -33,10 +33,16 @@ const Escuelas = () => {
     const fechaString = String
     const fecha = new Date(fechaString)
 
-    const year = fecha.getFullYear() // obtener el año
-    const month = fecha.getMonth() + 1 // obtener el mes (los meses empiezan en cero)
-    const day = fecha.getDate() // obtener el día
-    return year + '/' + month + '/' + day
+    const year = fecha.getFullYear()
+    let month = fecha.getMonth() + 1
+    if (month < 10) {
+      month = '0' + month
+    }
+    let day = fecha.getDate()
+    if (day < 10) {
+      day = '0' + day
+    }
+    return day + '/' + month + '/' + year
   }
 
   return (
