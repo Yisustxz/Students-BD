@@ -62,6 +62,13 @@ const Estudiantes = () => {
             Listado de Estudiantes
           </h1>
         </div>
+        <div className='flex justify-center'>
+          <Link className='flex w-full justify-center' to='/EstudiantesForm'>
+            <button className='text-violet-600 w-2/4 bg-[#f9f9f9] rounded-lg text-[1em] font-medium cursor-pointer px-[0.6em] py-[1em] transition-all border-2 hover:border-violet-400 mb-3 mr-8'>
+              Añadir Estudiantes
+            </button>
+          </Link>
+        </div>
         <table className='mx-auto'>
           <thead>
             <tr className='bg-gray-200 text-gray-600 uppercase text-sm leading-normal'>
