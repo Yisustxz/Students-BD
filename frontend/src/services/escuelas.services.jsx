@@ -56,8 +56,8 @@ export const deleteEscuela = async (id) => {
 
 export const createEscuela = async (escuela) => {
   try {
-    const res = await axios.put(BASE_URL, escuela)
-    if (!res.data.message || !res.data.success) {
+    const res = await axios.post(BASE_URL, escuela)
+    if (!res.data.success) {
       throw new Error('Ha ocurrido un fallo con el backend')
     }
 

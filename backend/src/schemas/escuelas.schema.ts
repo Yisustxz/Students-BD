@@ -21,5 +21,6 @@ export const escuelasSchema = z.object({
         'La fecha debe estar en formato DD-MM-AAAA y ser una fecha válida'
       }
     )
+    .nullable()
     .optional()
 })

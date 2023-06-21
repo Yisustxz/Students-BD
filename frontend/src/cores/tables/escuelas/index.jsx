@@ -8,7 +8,7 @@ const Escuelas = () => {
 
   const fetchData = async () => {
     try {
-      const data = await getEscuelas()
+      const data = await getEscuelas(0, 100)
       setEscuelas(data.items)
     } catch (error) {
       toast.error(error.message)
@@ -48,9 +48,16 @@ const Escuelas = () => {
               Volver
             </button>
           </Link>
-          <h1 className='text-center w-screen text-4xl font-extrabold py-8 bg-violet-400 mr-8'>
+          <h1 className='text-center w-screen text-4xl font-extrabold py-8 bg-violet-400 mr-24'>
             Listado de Escuelas
           </h1>
+        </div>
+        <div className='flex justify-center'>
+          <Link className='flex w-full justify-center' to='/EscuelasForm'>
+            <button className='text-violet-600 w-2/4 bg-[#f9f9f9] rounded-lg text-[1em] font-medium cursor-pointer px-[0.6em] py-[1em] transition-all border-2 hover:border-violet-400 mb-3 mr-8'>
+              Crear Escuela
+            </button>
+          </Link>
         </div>
         <table className='mx-auto'>
           <thead>

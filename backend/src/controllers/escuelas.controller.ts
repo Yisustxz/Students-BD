@@ -73,8 +73,12 @@ export const getEscuelaById = async (
 
 const getEscuelaDataFromRequestBody = (requestBody: any): any[] => {
   const { cod_escuela, nombre_esc, fecha_creacion } = requestBody
-
-  const newEscuela = [cod_escuela, nombre_esc, fecha_creacion]
+  let newEscuela
+  if (fecha_creacion != null) {
+    newEscuela = [cod_escuela, nombre_esc, fecha_creacion]
+  } else {
+    newEscuela = [cod_escuela, nombre_esc]
+  }
 
   return newEscuela
 }
@@ -85,9 +89,16 @@ export const addEscuela = async (
 ): Promise<Response> => {
   try {
     const newEscuela = getEscuelaDataFromRequestBody(req.body)
+    let query =
+      'INSERT INTO escuelas (cod_escuela, nombre_esc, fecha_creacion) VALUES ($1, $2, $3) RETURNING cod_escuela'
+
+    if (newEscuela.length === 2) {
+      query =
+        'INSERT INTO escuelas (cod_escuela, nombre_esc) VALUES ($1, $2) RETURNING cod_escuela'
+    }
 
     const insertar = await pool.query({
-      text: 'INSERT INTO escuelas (cod_escuela, nombre_esc, fecha_creacion) VALUES ($1, $2, $3) RETURNING cod_escuela',
+      text: query,
       values: newEscuela
     })
     const insertedId: string = insertar.rows[0].cod_escuela

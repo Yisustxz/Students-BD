@@ -1,6 +1,7 @@
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
 import Home from './cores/home'
 import Escuelas from './cores/tables/escuelas'
+import EscuelasForm from './cores/tables/escuelas/form'
 import Estudiantes from './cores/tables/estudiantes'
 import EstudiantesForm from './cores/tables/estudiantes/form'
 
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/Escuelas' element={<Escuelas />} />
+        <Route path='/EscuelasForm' element={<EscuelasForm />} />
         <Route path='/Estudiantes' element={<Estudiantes />} />
         <Route path='/EstudiantesForm' element={<EstudiantesForm />} />
         <Route path='/Profesores' element={<Profesores />} />

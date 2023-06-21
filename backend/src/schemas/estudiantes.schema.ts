@@ -22,6 +22,7 @@ export const estudiantesSchema = z.object({
     .min(11, 'El número de teléfono debe ser de 11 carácteres numéricos')
     .max(11, 'El número de teléfono debe ser de 11 carácteres numéricos')
     .regex(/^\d+$/, 'El número de teléfono debe contener solo números')
+    .nullable()
     .optional(),
   fecha_nac: z
     .string()

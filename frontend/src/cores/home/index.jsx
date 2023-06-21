@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { getProfesores } from '../../services/profesores.services'
+// import { getProfesores } from '../../services/profesores.services'
 import { getEstudiantes } from '../../services/estudiantes.services'
 import { getEscuelas } from '../../services/escuelas.services'
 
 function Home() {
-  const [profesoresQuantity, setProfesoresQuantity] = useState()
+  // const [profesoresQuantity, setProfesoresQuantity] = useState()
   const [estudiantesQuantity, setEstudiantesQuantity] = useState()
   const [escuelasQuantity, setEscuelasQuantity] = useState()
 
   const loadHomeInfo = async () => {
     try {
-      const profesoresData = await getProfesores()
+      // const profesoresData = await getProfesores()
       const estudiantesData = await getEstudiantes()
       const escuelasData = await getEscuelas()
-      setProfesoresQuantity(profesoresData.paginate.total)
+      // setProfesoresQuantity(profesoresData.paginate.total)
       setEstudiantesQuantity(estudiantesData.paginate.total)
       setEscuelasQuantity(escuelasData.paginate.total)
     } catch (error) {
@@ -46,7 +46,7 @@ function Home() {
           </Link>
         </div>
 
-        <div className='w-full md:w-1/4 px-3 border-4 rounded-lg hover:border-violet-300'>
+        {/* <div className='w-full md:w-1/4 px-3 border-4 rounded-lg hover:border-violet-300'>
           <h2 className='text-4xl font-extrabold my-8 '>
             Profesores: {profesoresQuantity}
           </h2>
@@ -55,7 +55,7 @@ function Home() {
               Ir a profesores
             </button>
           </Link>
-        </div>
+        </div> */}
 
         <div className='flex flex-col items-center md:w-1/4 px-3 border-4 rounded-lg hover:border-violet-300'>
           <h2 className='text-4xl font-extrabold my-8'>
