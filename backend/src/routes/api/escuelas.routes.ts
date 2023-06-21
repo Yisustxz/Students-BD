@@ -16,7 +16,7 @@ const router = Router()
 router.get('/', reqQueryValidator(), getEscuelas)
 router.get('/:id', getEscuelaById)
 router.post('/', schemaValidator(escuelasSchema), addEscuela)
-router.put('/:id', updateEscuela)
+router.put('/:id', schemaValidator(escuelasSchema), updateEscuela)
 router.delete('/:id', deleteEscuela)
 
 export default router

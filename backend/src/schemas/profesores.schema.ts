@@ -33,7 +33,7 @@ export const profesoresSchema = z.object({
       },
       {
         message:
-        'La fecha debe estar en formato AAAA-MM-DD y ser una fecha válida'
+        'La fecha debe estar en formato DD-MM-AAAA y ser una fecha válida'
       }
     )
     .optional(),
@@ -46,7 +46,7 @@ export const profesoresSchema = z.object({
       },
       {
         message:
-          'La fecha debe estar en formato AAAA-MM-DD y ser una fecha válida'
+          'La fecha debe estar en formato DD-MM-AAAA y ser una fecha válida'
       }
     )
     .optional()

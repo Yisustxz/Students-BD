@@ -17,7 +17,7 @@ const router = Router()
 router.get('/', reqQueryValidator(), getProfesores)
 router.get('/:id', idParamValidator(), getProfesorById)
 router.post('/', schemaValidator(profesoresSchema), addProfesor)
-router.put('/:id', idParamValidator(), updateProfesor)
+router.put('/:id', idParamValidator(), schemaValidator(profesoresSchema), updateProfesor)
 router.delete('/:id', idParamValidator(), deleteProfesor)
 
 export default router

@@ -105,11 +105,11 @@ SELECT
   asg.cod_asignatura AS codigo,
   asg.nombre_asig AS asignatura,
   asg.semestre,
-  COUNT(*) AS estudiantes_aprobados
+  COUNT(CASE WHEN cal.status_n IN ('A') THEN 1 END) AS estudiantes_aprobados
 FROM asignaturas AS asg
-INNER JOIN secciones AS sec ON asg.cod_asignatura = sec.cod_asignatura
-INNER JOIN calificaciones AS cal ON sec.nrc = cal.nrc
-WHERE asg.status_a IN ('E') AND cal.status_n IN ('A')
+LEFT JOIN secciones AS sec ON asg.cod_asignatura = sec.cod_asignatura
+LEFT JOIN calificaciones AS cal ON sec.nrc = cal.nrc
+WHERE asg.status_a IN ('E')
 GROUP BY asg.cod_asignatura
 ORDER BY 
   semestre DESC, 
@@ -186,24 +186,19 @@ WHERE (
 -- Eliminar los Profesores cuya Estatus sea “Retirado” y la fecha de egreso sea mayor
 -- a 10 años, manteniendo la consistencia de la base de datos, y registrando todos los
 -- datos contenidos en la tabla Profesores, en un archivo histórico denominado
--- HistoricoProfesor.
-
--- crear valores de prueba para profesores de 2012 para abajo y asignarle secciones esos años    
+-- HistoricoProfesor.   
 
 BEGIN;
 
-  CREATE TABLE historicoProfesores (
-    cedula_profesor dom_cedulas,
+  CREATE TABLE IF NOT EXISTS historicoProfesores (
+    cedula_profesor dom_cedulas PRIMARY KEY,
     nombre_p dom_nombre,
     direccion_p VARCHAR(32) NOT NULL,
     telefono_p VARCHAR(11) DEFAULT NULL,
     fecha_ingreso dom_fechas DEFAULT CURRENT_TIMESTAMP,
-    fecha_egreso dom_fechas DEFAULT NULL
+    fecha_egreso dom_fechas DEFAULT NULL,
+    CONSTRAINT v_fecha_egreso CHECK (fecha_egreso > fecha_ingreso)
   );
-
-  ALTER TABLE historicoProfesores
-    ADD PRIMARY KEY (cedula_profesor),
-    ADD CONSTRAINT v_fecha_egreso CHECK (fecha_egreso > fecha_ingreso);
 
   INSERT INTO historicoProfesores(
     cedula_profesor,
@@ -223,28 +218,23 @@ BEGIN;
   WHERE (
     status_p IN ('R') 
     AND 
-    EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM fecha_egreso) > 0
+    EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM fecha_egreso) > 10
   );
 
   ALTER TABLE secciones
-    ADD COLUMN profesor_egresado VARCHAR(8) DEFAULT NULL,
+    ADD COLUMN IF NOT EXISTS profesor_egresado VARCHAR(8) DEFAULT NULL,
     ADD CONSTRAINT profesor_egresado_fk FOREIGN KEY (profesor_egresado) REFERENCES historicoProfesores(cedula_profesor)
-      ON DELETE RESTRICT 
-      ON UPDATE CASCADE;
-
--- UPDATE secciones
--- SET 
---   profesor_egresado = cedula_profesor,
---   cedula_profesor = NULL
--- WHERE cedula_profesor IN (
---   SELECT cedula_profesor
---   FROM profesores
---   WHERE (
---     status_p IN ('R') 
---     AND 
---     EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM fecha_egreso) > 10
---   )
--- );
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE;
+    
+  DO $$BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'profesor_egresado_fk') THEN
+      ALTER TABLE secciones
+      ADD CONSTRAINT profesor_egresado_fk FOREIGN KEY (profesor_egresado) REFERENCES historicoProfesores(cedula_profesor)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE;
+    END IF;
+  END$$;
 
   UPDATE secciones AS sec
   SET 
