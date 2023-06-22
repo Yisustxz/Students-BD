@@ -31,6 +31,20 @@ INNER JOIN asignaturas AS asg ON sec.cod_asignatura = asg.cod_asignatura
 WHERE (asg.nombre_asig = 'Inteligencia Artificial' AND sec.lapso = '2021-15')
 ORDER BY profesor;
 
+SELECT 
+  prof.cedula_profesor AS cedula, 
+  prof.nombre_p AS profesor
+FROM 
+  profesores AS prof, 
+  secciones AS sec, 
+  asignaturas AS asg
+WHERE (
+  prof.cedula_profesor = sec.cedula_profesor AND
+  sec.cod_asignatura = asg.cod_asignatura AND
+  (asg.nombre_asig = 'Inteligencia Artificial' AND sec.lapso = '2021-15')
+)
+ORDER BY profesor;
+
 -- (4)
 -- Listar, para cada Escuela, la cantidad de estudiantes activos, no inscritos y
 -- retirados. El listado debe contener el código y nombre de la Escuela así como
