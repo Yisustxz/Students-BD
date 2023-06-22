@@ -22,27 +22,6 @@ ORDER BY
 -- dado, en un lapso también dado. El listado debe estar ordenado ascendentemente
 -- por nombre del profesor.
 
--- SELECT 
---   cedula_profesor AS cedula, 
---   nombre_p AS profesor
--- FROM profesores
--- WHERE cedula_profesor IN (
---   SELECT cedula_profesor 
---   FROM secciones 
---   WHERE (
---     lapso = '202115' AND cod_asignatura IN (
---       SELECT cod_asignatura
---       FROM asignaturas
---       WHERE (
---         nombre_asig = 'Inteligencia Artificial'
---       )
---     )
---   )
--- )
--- ORDER BY profesor;
-
--- Haciendo uso de JOINS (Mejora)
-
 SELECT 
   prof.cedula_profesor AS cedula, 
   prof.nombre_p AS profesor
@@ -68,7 +47,9 @@ SELECT
   COUNT(CASE WHEN est.status_est IN ('A', 'N', 'R') THEN 1 END) AS total_estudiantes
 FROM escuelas AS esc
 LEFT JOIN estudiantes AS est ON esc.cod_escuela = est.cod_escuela
-GROUP BY esc.cod_escuela
+GROUP BY 
+  esc.cod_escuela,
+  esc.nombre_esc
 ORDER BY total_estudiantes DESC;
 
 -- (5)
@@ -110,7 +91,10 @@ FROM asignaturas AS asg
 LEFT JOIN secciones AS sec ON asg.cod_asignatura = sec.cod_asignatura
 LEFT JOIN calificaciones AS cal ON sec.nrc = cal.nrc
 WHERE asg.status_a IN ('E')
-GROUP BY asg.cod_asignatura
+GROUP BY 
+  asg.cod_asignatura,
+  asg.nombre_asig,
+  asg.semestre
 ORDER BY 
   semestre DESC, 
   estudiantes_aprobados DESC;
@@ -120,33 +104,6 @@ ORDER BY
 -- que tengan más de 5 años de estudios. La salida debe mostrar : Id, nombre de
 -- estudiante, total de asignaturas cursadas, total de asignaturas reprobadas ,
 -- ordenados por total de asignaturas reprobadas en forma descendente.
-
--- ERROR
-
--- SELECT 
---   est.id_estudiante AS id, 
---   est.nombre_est AS estudiante,
---   COUNT(DISTINCT sec.cod_asignatura) AS asignaturas_cursadas,
---   COUNT(
---     DISTINCT CASE WHEN cal.status_n = 'R' THEN sec.cod_asignatura ELSE NULL END
---   ) AS asignaturas_reprobadas
--- FROM estudiantes AS est
--- INNER JOIN calificaciones AS cal ON est.id_estudiante = cal.id_estudiante
--- INNER JOIN secciones AS sec ON cal.nrc = sec.nrc
--- WHERE (
---     (SELECT COUNT(DISTINCT sec.lapso) 
---     FROM sec) > 10 
---   AND 
---     (SELECT COUNT(DISTINCT cod_asignatura)
---     FROM secciones
---     WHERE nrc IN (
---       SELECT cal.nrc
---       FROM cal
---       WHERE cal.status_n IN ('R')
---     )) > 5
--- )
--- GROUP BY est.id_estudiante
--- ORDER BY asignaturas_reprobadas DESC;
 
 SELECT 
   est.id_estudiante AS id, 
@@ -158,7 +115,9 @@ SELECT
 FROM estudiantes AS est
 INNER JOIN calificaciones AS cal ON est.id_estudiante = cal.id_estudiante
 INNER JOIN secciones AS sec ON cal.nrc = sec.nrc
-GROUP BY est.id_estudiante
+GROUP BY 
+  est.id_estudiante,
+  est.nombre_est
 HAVING (
   COUNT(DISTINCT sec.lapso) > 10
   AND 
